@@ -15,6 +15,9 @@ GitHub Actions is a feature within GitHub that automates workflows in response t
 - **Step**: A single task in a job, which could be a script, a GitHub Action, or a shell command.
 - **Runner**: A server or environment that runs your workflow jobs. It can be hosted by GitHub (GitHub-hosted runner) or self-hosted.
 
+
+![alt text](image.png)
+
 ---
 
 ### **2. Events in GitHub Actions**
@@ -341,3 +344,12 @@ If existing actions do not meet your needs, you can create custom GitHub Actions
 ---
 
 This comprehensive guide should help you dive deep into GitHub Actions and its capabilities. Let me know if you need more clarification or further examples!
+
+
+----
+
+## **scheduling cron Jobs**:
+
+![alt text](image-1.png)
+
+

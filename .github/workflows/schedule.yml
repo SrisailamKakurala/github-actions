@@ -1,0 +1,11 @@
+name: scheduler
+on: 
+  schedule:
+    - cron: '*/1 * * * *'
+
+jobs:
+  say_time:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo Current Time
+        run: echo "the current server time is ${date}"
