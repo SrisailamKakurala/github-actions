@@ -348,8 +348,13 @@ This comprehensive guide should help you dive deep into GitHub Actions and its c
 
 ----
 
-## **scheduling cron Jobs**:
+## **Scheduling cron Jobs**:
 
 ![alt text](image-1.png)
+
+
+## **Triggering Single or Multiple Events**:
+
+![alt text](image-2.png)
 
 

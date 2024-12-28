@@ -1,0 +1,20 @@
+name: multi events
+
+on:
+  push:
+      branches: [main]
+  pull_request: 
+      branches:
+        - main
+        - master
+
+jobs:
+  hello-world:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "ECHO BASIC INFO"
+        run: | # Using | in run ensures multiple commands are executed in a single step.
+          echo "REF: $GITHUB_REF" 
+          echo "ACTION: $GITHUB_ACTION" 
+          echo "JOB ID: $GITHUB_JOB" 
+          echo "ACTOR: $GITHUB_ACTOR" 
