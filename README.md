@@ -653,4 +653,111 @@ Conditionals in GitHub Actions allow workflows to adapt dynamically based on con
 
 ---
 
-### 
+### Expressions
+
+![alt text](image.png)
+
+Expressions in GitHub Actions are used to evaluate conditions and set dynamic values. Here’s a concise guide covering all the essentials:
+
+
+### **1. Basic Syntax**
+Expressions are enclosed in double curly braces `{{ }}` and evaluated with the `$` symbol:
+```yaml
+if: ${{ <expression> }}
+```
+
+---
+
+### **2. Operators**
+#### **Arithmetic Operators**
+- `+`, `-`, `*`, `/`, `%`
+- Example: `$((3 + 2))` → `5`
+
+#### **Comparison Operators**
+- `==`, `!=`, `<`, `<=`, `>`, `>=`
+- Example: `$((1 > 0))` → `true`
+
+#### **Logical Operators**
+- `&&` (AND), `||` (OR), `!` (NOT)
+- Example: `$((true && false))` → `false`
+
+---
+
+### **3. Functions**
+#### **Status Checks**
+- `success()` → Returns `true` if previous steps/jobs succeeded.
+- `failure()` → Returns `true` if any previous step/job failed.
+- `cancelled()` → Returns `true` if the workflow was canceled.
+- `always()` → Always returns `true`.
+
+#### **String Functions**
+- `startsWith(string, prefix)`
+- `endsWith(string, suffix)`
+- `contains(string, substring)`
+- Example: `$((startsWith('main', 'm')))` → `true`
+
+#### **Utility Functions**
+- `format()` → Formats a string.
+- `join(array, delimiter)` → Joins array elements.
+- `toJSON(value)` → Converts a value to JSON.
+
+---
+
+### **4. Contexts**
+Contexts provide dynamic information. Common ones include:
+
+#### **GitHub Context**
+- `github.event_name` → The name of the triggering event.
+- `github.actor` → The user who triggered the workflow.
+- `github.ref` → The branch or tag ref.
+
+#### **Job Context**
+- `job.status` → Status of the current job: `success`, `failure`, or `cancelled`.
+
+#### **Runner Context**
+- `runner.os` → Operating system of the runner.
+
+#### **Secrets Context**
+- `secrets.<name>` → Access to GitHub secrets.
+- Example: `secrets.MY_SECRET`
+
+#### **Env Context**
+- `env.<name>` → Access to environment variables.
+- Example: `env.DEPLOY_ENV`
+
+#### **Inputs Context**
+- `inputs.<name>` → Inputs passed to the workflow.
+- Example: `inputs.environment`
+
+---
+
+### **5. Examples**
+
+#### Conditional Branch Check:
+```yaml
+if: ${{ github.ref == 'refs/heads/main' }}
+```
+
+#### Check Pull Request Author:
+```yaml
+if: ${{ github.event.pull_request.user.login == 'octocat' }}
+```
+
+#### Run Step Only on Success:
+```yaml
+if: ${{ success() }}
+```
+
+#### Format a String:
+```yaml
+run: echo "${{ format('Deploying to {0}', github.ref) }}"
+```
+
+#### Combine Conditions:
+```yaml
+if: ${{ github.actor == 'octocat' && github.event_name == 'push' }}
+```
+
+---
+
+These expressions allow dynamic, flexible workflows tailored to your automation needs!
