@@ -495,6 +495,162 @@ These webhook triggers make GitHub Actions versatile, allowing automation for bo
 ![alt text](conditionals.png)
 
 
+In GitHub Actions, **conditionals** control whether a workflow, job, or step should run. These conditions use the **`if`** keyword and evaluate expressions based on context and variables.
+
+Here’s a breakdown of conditionals in GitHub Actions:
+
+---
+
+### **1. Conditional Execution for Workflows**
+
+While workflows don’t have direct `if` conditions, you can control execution using specific events and filters (e.g., branches, tags). 
+
+**Example: Run workflow only on `main` branch**:
+```yaml
+on:
+  push:
+    branches:
+      - main
+```
+
+---
+
+### **2. Conditional Execution for Jobs**
+
+Jobs can have conditions using the `if` keyword.
+
+**Syntax**:
+```yaml
+jobs:
+  job-name:
+    if: <condition>
+    runs-on: ubuntu-latest
+```
+
+**Example: Run a job only for PRs**:
+```yaml
+jobs:
+  build:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This job runs only for PRs"
+```
+
+---
+
+### **3. Conditional Execution for Steps**
+
+Steps can also use the `if` keyword to control execution.
+
+**Syntax**:
+```yaml
+steps:
+  - name: Step Name
+    if: <condition>
+    run: <command>
+```
+
+**Example: Run step only if a previous step succeeds**:
+```yaml
+steps:
+  - name: Build
+    run: echo "Building..."
+  - name: Deploy
+    if: success()
+    run: echo "Deploying..."
+```
+
+---
+
+### **Common Conditions**
+
+Here are some commonly used conditions:
+
+#### **Status Conditions**
+- **`success()`**: Step or job runs if all previous steps/jobs succeeded.
+- **`failure()`**: Runs if a previous step/job failed.
+- **`always()`**: Runs regardless of success or failure.
+- **`cancelled()`**: Runs if the workflow was canceled.
+
+#### **Event-Specific Conditions**
+- **Check event type**:
+  ```yaml
+  if: github.event_name == 'push'
+  ```
+- **Filter branch or tag**:
+  ```yaml
+  if: startsWith(github.ref, 'refs/heads/main')
+  ```
+
+#### **Environment Variables and Context**
+- **Use GitHub context**:
+  ```yaml
+  if: github.actor == 'octocat'
+  ```
+- **Use inputs**:
+  ```yaml
+  if: inputs.environment == 'production'
+  ```
+
+#### **Boolean Logic**
+Combine multiple conditions using `&&`, `||`, and `!`.
+
+**Example: Only on main branch and success**:
+```yaml
+if: github.ref == 'refs/heads/main' && success()
+```
+
+---
+
+### **Example Workflow with Conditionals**
+
+```yaml
+name: Conditional Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Code
+        run: echo "Building..."
+      - name: Deploy to Production
+        if: github.ref == 'refs/heads/main' && success()
+        run: echo "Deploying to production!"
+```
+
+---
+
+### **Advanced Conditional Triggers**
+
+#### Use Inputs for Conditional Logic:
+```yaml
+on:
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Should deploy'
+        required: true
+        default: 'false'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.deploy == 'true'
+    steps:
+      - run: echo "Deploying as per input!"
+```
+
+---
+
+Conditionals in GitHub Actions allow workflows to adapt dynamically based on context, inputs, and statuses, providing flexibility and control over execution!
+
+
 ---
 
 ### 
