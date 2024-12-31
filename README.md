@@ -761,3 +761,116 @@ if: ${{ github.actor == 'octocat' && github.event_name == 'push' }}
 ---
 
 These expressions allow dynamic, flexible workflows tailored to your automation needs!
+
+
+
+---
+
+### Runners
+
+In GitHub Actions, **runners** are the virtual environments where your workflows are executed. They are responsible for running the jobs defined in your workflow files. Runners are where the actual execution of your code, commands, and steps takes place.
+
+![alt text](image-3.png)
+
+![alt text](image-4.png)
+
+![alt text](image-5.png)
+
+
+### Types of Runners
+
+1. **GitHub-Hosted Runners:**
+   These are virtual machines provided by GitHub that are preconfigured with popular software tools. GitHub maintains, updates, and manages these runners, so you don’t need to worry about the underlying infrastructure. They are typically used for general-purpose workflows.
+
+   - **Operating Systems Available:**
+     - Ubuntu (latest versions)
+     - Windows (latest versions)
+     - macOS (latest versions)
+
+   - **Example of using a GitHub-hosted runner:**
+     ```yaml
+     jobs:
+       build:
+         runs-on: ubuntu-latest
+         steps:
+           - uses: actions/checkout@v2
+           - run: echo "Hello, World!"
+     ```
+
+   - **Advantages:**
+     - No setup required—GitHub takes care of the infrastructure.
+     - Preconfigured with common tools and languages (Node.js, Python, Java, etc.).
+     - Automatically updated with the latest patches.
+
+   - **Disadvantages:**
+     - Limited control over the environment (you can't install custom software by default).
+     - They might have resource limitations (e.g., CPU, memory, disk space) depending on your usage.
+
+2. **Self-Hosted Runners:**
+   These are machines that you set up and configure yourself, either on your own hardware or in a cloud environment. They allow more customization and control over the environment, enabling you to install specific software, tools, or configurations that are required for your workflows.
+
+   - **Example of using a self-hosted runner:**
+     ```yaml
+     jobs:
+       build:
+         runs-on: self-hosted
+         steps:
+           - uses: actions/checkout@v2
+           - run: echo "Custom build on self-hosted runner!"
+     ```
+
+   - **Advantages:**
+     - Full control over the environment (you can install any software you need).
+     - Can be used for workflows that require specific tools or hardware configurations.
+     - Can be more cost-effective for large-scale workflows or for workflows that require more resources than GitHub-hosted runners provide.
+   
+   - **Disadvantages:**
+     - You need to set up and maintain the runner (including updates, security, etc.).
+     - You are responsible for scaling and handling issues such as hardware failures.
+
+### Key Properties of Runners:
+
+- **Runs-on:** The `runs-on` key specifies which type of runner the job should run on. It can either be `ubuntu-latest`, `windows-latest`, `macos-latest` (for GitHub-hosted runners) or a custom label for a self-hosted runner.
+
+- **Self-hosted Runners Labels:** When using self-hosted runners, you can assign labels to them to help organize or filter which runners to use for specific jobs. For example:
+  ```yaml
+  jobs:
+    build:
+      runs-on: [self-hosted, linux]
+  ```
+
+- **Environment Setup:** For self-hosted runners, you can install any software you need for your workflows (e.g., database servers, specific language versions, etc.).
+
+- **Virtual Environments:** GitHub-hosted runners use virtual environments that are discarded after the workflow completes. This means that each workflow run starts with a fresh environment. For self-hosted runners, the environment persists between workflow runs, so you can maintain data or software installed from previous runs.
+
+### Runner Lifecycle:
+1. **Job Queue:** When a workflow is triggered, GitHub checks for an available runner to execute the job.
+2. **Runner Start:** If the runner is not already running, GitHub starts the appropriate runner based on the `runs-on` specification.
+3. **Job Execution:** The runner executes each step in the workflow until it completes or fails.
+4. **Post-job Cleanup:** For GitHub-hosted runners, the environment is discarded once the job is done. For self-hosted runners, the environment persists for further jobs until manually cleaned up.
+
+### Example of Runner Usage in GitHub Actions YAML:
+```yaml
+name: Build and Test
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest  # Use a GitHub-hosted Ubuntu runner
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm install
+      - run: npm test
+  deploy:
+    runs-on: self-hosted  # Use a self-hosted runner
+    steps:
+      - uses: actions/checkout@v2
+      - run: ./deploy-script.sh
+```
+
+### Conclusion:
+- **GitHub-hosted runners** are easier to use and set up, suitable for most general use cases.
+- **Self-hosted runners** provide greater control and flexibility, ideal for custom environments, complex workflows, or specific resource needs.
+
+You can choose between these based on your project’s needs, scale, and level of customization required for your workflows.

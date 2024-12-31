@@ -1,0 +1,43 @@
+name: Test Runners
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ubuntu:
+    name: Run on Ubuntu
+    runs-on: ubuntu-latest  # GitHub-hosted runner for Ubuntu
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run a command on Ubuntu
+        run: echo "Running on Ubuntu runner"
+
+  windows:
+    name: Run on Windows
+    runs-on: windows-latest  # GitHub-hosted runner for Windows
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run a command on Windows
+        run: echo "Running on Windows runner"
+
+  macos:
+    name: Run on macOS
+    runs-on: macos-latest  # GitHub-hosted runner for macOS
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run a command on macOS
+        run: echo "Running on macOS runner"
+
+  self-hosted:
+    name: Run on Self-hosted Runner
+    runs-on: self-hosted  # Self-hosted runner
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run a command on Self-hosted runner
+        run: echo "Running on Self-hosted runner"
