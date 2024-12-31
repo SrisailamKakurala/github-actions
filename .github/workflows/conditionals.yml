@@ -5,7 +5,7 @@ on: push
 jobs:
     hello-world:
       runs-on: ubuntu-latest
-      if: github.repository == 'octo-org/octo-org-prod'
+      if: github.repository == 'SrisailamKakurala/github-actions'
       steps:
         - name: Hello World
           run: echo "Hello World"
