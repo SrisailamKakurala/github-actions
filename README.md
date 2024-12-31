@@ -341,3 +341,143 @@ If existing actions do not meet your needs, you can create custom GitHub Actions
 ---
 
 This comprehensive guide should help you dive deep into GitHub Actions and its capabilities. Let me know if you need more clarification or further examples!
+
+
+---
+
+### **Webhook Triggers (Built-In GitHub Events)**
+
+GitHub Actions supports a wide range of built-in webhook events. These events are emitted when specific actions occur in your GitHub repository or organization. Below is a categorized list of commonly used events:
+
+#### **Code and Repository Events**
+- **`push`**: Triggered on a `git push` to a branch.
+- **`pull_request`**: Triggered on PR events like `opened`, `closed`, `merged`, etc.
+- **`issues`**: Triggered on issue events like `opened`, `edited`, `deleted`.
+- **`create` / `delete`**: Triggered when a branch or tag is created or deleted.
+- **`fork`**: Triggered when a repository is forked.
+- **`repository_dispatch`**: Custom external trigger (discussed below in detail).
+
+#### **Release and Deployment Events**
+- **`release`**: Triggered on events like creating, editing, or publishing a release.
+- **`workflow_dispatch`**: Manual workflow trigger via GitHub Actions UI.
+- **`deployment`**: Triggered when a deployment is created.
+- **`deployment_status`**: Triggered when a deployment status changes.
+
+#### **Collaboration Events**
+- **`pull_request_review`**: Triggered when a PR review is submitted.
+- **`pull_request_target`**: Similar to `pull_request`, but runs with the target repository's permissions.
+- **`discussion`**: Triggered on GitHub Discussions events.
+- **`star`**: Triggered when someone stars a repository.
+
+#### **Automation and Security Events**
+- **`schedule`**: Triggered on a cron-like schedule (time-based workflows).
+- **`workflow_run`**: Triggered when another workflow completes.
+- **`check_run` / `check_suite`**: Triggered by status checks.
+
+---
+
+### **Custom Webhook Triggers**
+
+#### **1. `workflow_dispatch` (Manual Trigger)**
+This allows you to manually trigger workflows via the GitHub Actions UI, with optional input parameters.
+
+**Example Workflow**:
+```yaml
+name: Manual Trigger Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+
+jobs:
+  manual-trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Environment
+        run: echo "Deploying to ${{ github.event.inputs.environment }}"
+```
+
+---
+
+#### **2. `repository_dispatch` (External Trigger)**
+
+This is triggered by external systems sending a `POST` request to the GitHub API, allowing workflows to respond to events outside GitHub.
+
+**Example Workflow**:
+```yaml
+name: External Trigger Workflow
+
+on:
+  repository_dispatch:
+    types:
+      - sync-data
+
+jobs:
+  external-trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Payload
+        run: echo "Triggered by: ${{ toJSON(github.event.client_payload) }}"
+```
+
+**API Call to Trigger**:
+```bash
+curl -X POST \
+-H "Authorization: Bearer YOUR_GITHUB_TOKEN" \
+-H "Accept: application/vnd.github+json" \
+https://api.github.com/repos/<OWNER>/<REPO>/dispatches \
+-d '{"event_type": "sync-data", "client_payload": {"key": "value"}}'
+```
+
+---
+
+### **Types of `repository_dispatch`**
+
+You can define multiple custom `event_type` values:
+- **sync-data**
+- **run-tests**
+- **update-logs**
+- These are arbitrary and allow you to customize workflows based on your needs.
+
+---
+
+### **Differences Between `workflow_dispatch` and `repository_dispatch`**
+| Feature                | `workflow_dispatch`            | `repository_dispatch`        |
+|------------------------|---------------------------------|------------------------------|
+| **Triggered By**       | Manual via GitHub UI           | External system/API call     |
+| **Supports Inputs**    | Yes                            | Yes (via `client_payload`)   |
+| **Use Case**           | Manual triggers for workflows  | Integrating with external systems |
+
+---
+
+### **Examples of Use Cases**
+
+#### **1. Custom CI/CD Pipeline**
+Use `repository_dispatch` to trigger a CI/CD pipeline when a new version of software is released in an external system.
+
+#### **2. Synchronize Data**
+Trigger workflows to fetch data from APIs, update configurations, or sync databases.
+
+#### **3. Time-Based Automation**
+Combine `schedule` and `repository_dispatch` for complex time-based tasks that also require external system integration.
+
+---
+
+These webhook triggers make GitHub Actions versatile, allowing automation for both internal GitHub events and external systems.
+
+
+
+---
+
+### Conditionals
+
+![alt text](image.png)
+
+
+---
+
+### 

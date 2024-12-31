@@ -1,0 +1,16 @@
+name: Condotionals
+
+on: push
+
+jobs:
+    hello-world:
+      runs-on: ubuntu-latest
+      if: github.repository == 'octo-org/octo-org-prod'
+      steps:
+        - name: Hello World
+          run: echo "Hello World"
+    hello-mars:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Hello mars
+          run: echo "Hello Mars"
