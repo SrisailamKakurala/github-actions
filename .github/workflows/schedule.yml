@@ -1,0 +1,12 @@
+name: scheduler
+on: 
+  schedule:
+    - cron: '*/1 * * * *' # Runs every minute
+  #workflow_dispatch: # Allows manual triggering from the Actions tab
+
+jobs:
+  say_time:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo Current Time
+        run: echo "The current server time is $(date)"
