@@ -1818,3 +1818,45 @@ This way, every time you push a new tag (representing a new version), a release 
 ---
 
 
+### deploy to cloud
+
+![alt text](image-23.png)
+
+---
+
+### Service containers
+
+In GitHub Actions, **service containers** are Docker containers that you can use to run services (like databases, caches, etc.) required by your workflow jobs. These containers run alongside your job and are accessible from within your actions, allowing you to interact with them during your CI/CD process.
+
+For example, you can run a MySQL service container to test your app with a database. Here's how you might define a MySQL service in a workflow:
+
+```yaml
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+          
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run tests
+        run: |
+          # Wait for MySQL to start
+          sleep 20
+          # Run your tests here
+``` 
+
+This allows your job to access the MySQL service at `localhost:3306`.
+
+
+---
+
+
