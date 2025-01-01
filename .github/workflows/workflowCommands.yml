@@ -21,10 +21,10 @@ jobs:
       # Set Output
       - name: Set output example
         id: output_step
-        run: echo "value=Output from Step 1" >> $GITHUB_ENV
+        run: echo "OUTPUT_VALUE=Output from Step 1" >> $GITHUB_ENV
 
       - name: Use output
-        run: echo "Received output: ${{ steps.output_step.outputs.value }}"
+        run: echo "Received output: $OUTPUT_VALUE"
 
       # Group Logs
       - name: Group logs example
