@@ -1073,3 +1073,168 @@ Would you like to see how these commands can be used in a complete workflow exam
 
 ---
 
+### Workflow Contexts in GitHub Actions
+
+GitHub Actions provides **contexts** that allow workflows to access information about the workflow run, repository, and environment. These are predefined variables that you can use in expressions or directly in workflows.
+
+![alt text](image-9.png)
+
+
+
+---
+
+### Major Contexts and Examples
+
+#### 1. **`github` Context**
+   Provides details about the repository, event, and workflow.
+
+   ```yaml
+   run: echo "Repository: ${{ github.repository }}"
+   run: echo "Event name: ${{ github.event_name }}"
+   run: echo "Run number: ${{ github.run_number }}"
+   run: echo "Commit SHA: ${{ github.sha }}"
+   ```
+
+#### 2. **`env` Context**
+   Access environment variables set during the workflow.
+
+   ```yaml
+   run: echo "Environment variable MY_VAR: ${{ env.MY_VAR }}"
+   ```
+
+#### 3. **`job` Context**
+   Contains information about the current job.
+
+   ```yaml
+   run: echo "Job ID: ${{ job.id }}"
+   run: echo "Job status: ${{ job.status }}"
+   ```
+
+#### 4. **`runner` Context**
+   Provides information about the runner instance.
+
+   ```yaml
+   run: echo "Runner OS: ${{ runner.os }}"
+   run: echo "Runner temp directory: ${{ runner.temp }}"
+   run: echo "Runner tool cache directory: ${{ runner.tool_cache }}"
+   ```
+
+#### 5. **`secrets` Context**
+   Access secrets defined in the repository or organization.
+
+   ```yaml
+   run: echo "My secret: ${{ secrets.MY_SECRET }}" # Avoid echoing secrets in production!
+   ```
+
+#### 6. **`steps` Context**
+   Access outputs from previous steps within the same job.
+
+   ```yaml
+   - name: Set output in step
+     id: example_step
+     run: echo "output_value=Hello" >> $GITHUB_ENV
+
+   - name: Use output from previous step
+     run: echo "Output value: ${{ env.output_value }}"
+   ```
+
+#### 7. **`strategy` Context**
+   Provides details about the strategy matrix (used with `matrix`).
+
+   ```yaml
+   strategy:
+     matrix:
+       os: [ubuntu-latest, windows-latest]
+       python: [3.8, 3.9]
+
+   - run: echo "OS: ${{ matrix.os }}"
+   - run: echo "Python version: ${{ matrix.python }}"
+   ```
+
+#### 8. **`needs` Context**
+   Access outputs from jobs this job depends on (when using `needs`).
+
+   ```yaml
+   jobs:
+     first_job:
+       runs-on: ubuntu-latest
+       outputs:
+         my_output: ${{ steps.output_step.outputs.value }}
+       steps:
+         - id: output_step
+           run: echo "value=First job output" >> $GITHUB_ENV
+
+     second_job:
+       runs-on: ubuntu-latest
+       needs: first_job
+       steps:
+         - run: echo "Output from first job: ${{ needs.first_job.outputs.my_output }}"
+   ```
+
+#### 9. **`inputs` Context**
+   Access inputs from reusable workflows.
+
+   ```yaml
+   inputs:
+     my_input: DefaultValue
+
+   steps:
+     - run: echo "Input value: ${{ inputs.my_input }}"
+   ```
+
+#### 10. **`always` Context**
+   Indicates whether the job or step always runs regardless of the result of earlier jobs/steps.
+
+   ```yaml
+   if: ${{ always() }}
+   ```
+
+---
+
+### Practical Workflow Example
+
+```yaml
+name: Workflow Contexts Demo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  demo-contexts:
+    runs-on: ubuntu-latest
+    steps:
+      # GitHub Context
+      - name: GitHub Context
+        run: |
+          echo "Repository: ${{ github.repository }}"
+          echo "Event name: ${{ github.event_name }}"
+
+      # Environment Context
+      - name: Environment Context
+        run: |
+          echo "MY_ENV_VAR=Hello World" >> $GITHUB_ENV
+          echo "Environment variable: ${{ env.MY_ENV_VAR }}"
+
+      # Runner Context
+      - name: Runner Context
+        run: |
+          echo "Runner OS: ${{ runner.os }}"
+          echo "Runner Temp Directory: ${{ runner.temp }}"
+
+      # Secrets Context
+      - name: Secrets Context
+        run: echo "Secret Value: ${{ secrets.MY_SECRET }}" # Avoid in production!
+
+      # Strategy Context
+      - name: Strategy Context
+        strategy:
+          matrix:
+            os: [ubuntu-latest, windows-latest]
+        steps:
+          - run: echo "Matrix OS: ${{ matrix.os }}"
+```
+
+---
+
