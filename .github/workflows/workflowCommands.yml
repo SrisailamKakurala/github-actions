@@ -24,7 +24,7 @@ jobs:
         run: echo "::set-output name=value::Output from Step 1"
 
       - name: Use output from previous step
-        run: echo "Received output: ${{ steps.output_step.outputs.value }}"
+        run: "echo \"Received output: ${{ steps.output_step.outputs.value }}\""
 
       # Group Logs
       - name: Group logs example
@@ -75,11 +75,11 @@ jobs:
 
       # Parse JSON Example
       - name: Parse JSON string
-        run: echo "Parsed JSON: ${{ fromJSON('{"key":"value"}').key }}"
+        run: "echo \"Parsed JSON: ${{ fromJSON('{"key":"value"}').key }}\""
 
       # Hash Files Example
       - name: Hash files
-        run: echo "Hash of files: ${{ hashFiles('**/package-lock.json', '**/Gemfile.lock') }}"
+        run: "echo \"Hash of files: ${{ hashFiles('**/package-lock.json', '**/Gemfile.lock') }}\""
 
       # Example of a successful job
       - name: Success example
