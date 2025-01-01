@@ -1,4 +1,3 @@
-# Example Workflow for npm Package
 name: Publish npm Package
 
 on:
@@ -11,25 +10,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Step 2: Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          registry-url: https://npm.pkg.github.com/
+          registry-url: https://registry.npmjs.org/
 
-      - name: Login to GitHub Package Registry
-        run: npm config set "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}"
-
+      # Step 3: Authenticate to npm
+      - name: Authenticate to npm
+        run: npm config set "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}"
+        
+      # Step 4: Install dependencies
       - name: Install dependencies
         run: npm install
 
+      # Step 5: Build the package (optional, if you have a build step)
       - name: Build the package
         run: npm run build
+        continue-on-error: true # Use this if you don't have a "build" script
 
+      # Step 6: Publish the package to npm
       - name: Publish package
         run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
