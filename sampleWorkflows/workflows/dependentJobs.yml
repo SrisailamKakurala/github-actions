@@ -23,8 +23,6 @@ on: push
 
 
 # reversed dependencies
-
-
 jobs:
   job1:
     runs-on: ubuntu-latest

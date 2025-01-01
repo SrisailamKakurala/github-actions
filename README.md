@@ -1403,8 +1403,277 @@ jobs:
 3. **Documentation**:
    Clearly document dependencies to avoid confusion in complex workflows.
 
+
+![alt text](image-11.png)
+
+job1 is dependent on job 2 and 3
+job2 is dependent on job 3
+job3 is dependent on none so it starts first
+
+**Relation:**
+job3 ---> job2 ---> job1
+
 ---
 
-Let me know if you'd like examples of more advanced patterns!
+
+### Encrypted Secrets
+
+![alt text](image-12.png)
+
+![alt text](image-13.png)
+
+![alt text](image-14.png)
 
 
+### Configuration Secrets
+
+![alt text](image-15.png)
+
+![alt text](image-16.png)
+
+
+### Default ENV Variables
+
+![alt text](image-17.png)
+
+### Set Custom ENV Variables
+
+![alt text](image-18.png)
+
+![alt text](image-19.png)
+
+![alt text](image-20.png)
+
+---
+
+### GITHUB_TOKEN
+
+
+The `GITHUB_TOKEN` is a built-in secret in GitHub Actions that allows your workflow to interact with the GitHub API securely. It is automatically created for each workflow run and provides scoped permissions based on your workflow's context.
+
+---
+
+### Key Points About `GITHUB_TOKEN`
+
+1. **Automatic Creation**:
+   - GitHub automatically creates the `GITHUB_TOKEN` secret for every workflow run.
+
+2. **Usage**:
+   - It is used to authenticate requests made by your workflow, such as pushing commits, creating issues, or accessing repositories.
+
+3. **Scope and Permissions**:
+   - The token's permissions depend on the repository's settings (e.g., `read/write` for private repositories or `read-only` for public repositories).
+
+4. **Lifecycle**:
+   - The token is valid only for the duration of the workflow run.
+
+5. **Security**:
+   - It is restricted to the repository where the workflow runs, and access can be further limited via permissions in the workflow file.
+
+---
+
+### Example: Using `GITHUB_TOKEN`
+
+#### Workflow Example: Pushing Changes
+
+```yaml
+name: GITHUB_TOKEN Example
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Make Changes
+        run: |
+          echo "New content" >> file.txt
+
+      - name: Commit and Push Changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Automated update"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+---
+
+### Common Use Cases for `GITHUB_TOKEN`
+
+1. **Publishing Packages**:
+   - Use it to authenticate with GitHub Packages.
+
+2. **API Requests**:
+   - Make API calls using the token for actions like creating issues or labeling pull requests.
+
+3. **Workflow Automation**:
+   - Automate tasks like merging pull requests or commenting on issues.
+
+---
+
+### Using `GITHUB_TOKEN` in API Requests
+
+You can use `GITHUB_TOKEN` to make authenticated API calls.
+
+#### Example: Creating an Issue
+
+```yaml
+name: API Request Example
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-issue:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create GitHub Issue
+        run: |
+          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/${{ github.repository }}/issues \
+          -d '{"title": "Automated Issue", "body": "This is an issue created by a workflow."}'
+```
+
+---
+
+### Configuring Permissions for `GITHUB_TOKEN`
+
+You can restrict the permissions of the `GITHUB_TOKEN` in your workflow using the `permissions` key.
+
+#### Example: Limiting Permissions
+
+```yaml
+name: Restrict GITHUB_TOKEN Permissions
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  restricted-permissions:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - name: Check Permissions
+        run: echo "Using GITHUB_TOKEN with restricted permissions"
+```
+
+---
+
+### Notes on Security
+
+- Avoid printing the `GITHUB_TOKEN` in logs.
+- Use the `GITHUB_TOKEN` instead of creating personal access tokens (PAT) for workflows.
+- Combine it with conditional expressions to control when certain tasks execute.
+
+Let me know if you'd like to explore specific use cases!
+
+---
+
+### Running Scripts in a workflow
+
+![alt text](image-21.png)
+
+Running scripts in GitHub Actions workflows allows you to automate tasks using shell commands, custom scripts, or external tools.
+
+---
+
+### Steps to Run Scripts in Workflows
+
+1. **Inline Commands**: Directly write commands using the `run` key.
+
+   ```yaml
+   steps:
+     - name: Inline script
+       run: |
+         echo "Hello, World!"
+         pwd
+         ls -la
+   ```
+
+2. **Run External Scripts**: Use scripts saved in your repository.
+
+   ```yaml
+   steps:
+     - name: Checkout code
+       uses: actions/checkout@v3
+
+     - name: Run external script
+       run: ./scripts/myscript.sh
+   ```
+
+   Ensure the script has executable permissions (`chmod +x scripts/myscript.sh`).
+
+3. **Use Different Shells**: Specify a shell for the script.
+
+   ```yaml
+   steps:
+     - name: Run with Bash
+       run: echo "Running with Bash"
+       shell: bash
+
+     - name: Run with PowerShell
+       run: Write-Output "Running with PowerShell"
+       shell: pwsh
+   ```
+
+4. **Run Node.js/Python/Other Language Scripts**:
+
+   ```yaml
+   # Running a Node.js script
+   steps:
+     - name: Run Node.js script
+       run: node scripts/myscript.js
+
+   # Running a Python script
+   steps:
+     - name: Run Python script
+       run: python scripts/myscript.py
+   ```
+
+---
+
+### Best Practices
+
+- **Environment Variables**: Use `env` for reusable configurations.
+
+   ```yaml
+   env:
+     MY_VAR: "Hello"
+   steps:
+     - name: Use environment variable
+       run: echo "Value is $MY_VAR"
+   ```
+
+- **Dependencies**: Install dependencies before running scripts.
+
+   ```yaml
+   steps:
+     - name: Install Node.js dependencies
+       run: npm install
+   ```
+
+- **Error Handling**: Use `set -e` for stopping on errors in shell scripts.
+
+---
+
+Let me know if you need help with a specific type of script!
