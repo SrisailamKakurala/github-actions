@@ -16,7 +16,7 @@ GitHub Actions is a feature within GitHub that automates workflows in response t
 - **Runner**: A server or environment that runs your workflow jobs. It can be hosted by GitHub (GitHub-hosted runner) or self-hosted.
 
 
-![alt text](image.png)
+![alt text](images/image.png)
 
 ---
 
@@ -290,7 +290,7 @@ steps:
 
 ### **10. Deployments and Publishing**
 
-GitHub Actions can be used to automate deployments and publish content, such as pushing Docker images to Docker Hub or creating releases.
+GitHub Actions can be used to automate deployments and publish content, such as pushing Docker images/images to Docker Hub or creating releases.
 
 #### **Publish a GitHub Package**:
 ```yaml
@@ -351,12 +351,12 @@ This comprehensive guide should help you dive deep into GitHub Actions and its c
 
 ## **Scheduling cron Jobs**:
 
-![alt text](image-1.png)
+![alt text](images/image-1.png)
 
 
 ## **Triggering Single or Multiple Events**:
 
-![alt text](image-2.png)
+![alt text](images/image-2.png)
 
 
 ---
@@ -492,7 +492,7 @@ These webhook triggers make GitHub Actions versatile, allowing automation for bo
 
 ### Conditionals
 
-![alt text](conditionals.png)
+![alt text](images/conditionals.png)
 
 
 In GitHub Actions, **conditionals** control whether a workflow, job, or step should run. These conditions use the **`if`** keyword and evaluate expressions based on context and variables.
@@ -655,7 +655,7 @@ Conditionals in GitHub Actions allow workflows to adapt dynamically based on con
 
 ### Expressions
 
-![alt text](image.png)
+![alt text](images/image.png)
 
 Expressions in GitHub Actions are used to evaluate conditions and set dynamic values. Here’s a concise guide covering all the essentials:
 
@@ -770,11 +770,11 @@ These expressions allow dynamic, flexible workflows tailored to your automation 
 
 In GitHub Actions, **runners** are the virtual environments where your workflows are executed. They are responsible for running the jobs defined in your workflow files. Runners are where the actual execution of your code, commands, and steps takes place.
 
-![alt text](image-3.png)
+![alt text](images/image-3.png)
 
-![alt text](image-4.png)
+![alt text](images/image-4.png)
 
-![alt text](image-5.png)
+![alt text](images/image-5.png)
 
 
 ### Types of Runners
@@ -880,11 +880,11 @@ You can choose between these based on your project’s needs, scale, and level o
 
 ### Workflow commands
 
-![alt text](image-6.png)
+![alt text](images/image-6.png)
 
-![alt text](image-7.png)
+![alt text](images/image-7.png)
 
-![alt text](image-8.png)
+![alt text](images/image-8.png)
 
 
 Workflow commands in GitHub Actions allow you to interact with the workflow runner's environment. These commands are executed using special syntax inside a workflow and help set environment variables, add annotations, mask secrets, and more.
@@ -1077,7 +1077,7 @@ Would you like to see how these commands can be used in a complete workflow exam
 
 GitHub Actions provides **contexts** that allow workflows to access information about the workflow run, repository, and environment. These are predefined variables that you can use in expressions or directly in workflows.
 
-![alt text](image-9.png)
+![alt text](images/image-9.png)
 
 
 
@@ -1240,7 +1240,7 @@ jobs:
 
 ### Dependent Jobs
 
-![alt text](image-10.png)
+![alt text](images/image-10.png)
 
 Dependent jobs are a way to define job execution order in a workflow. In GitHub Actions, you can set dependencies between jobs using the `needs` keyword. Jobs that depend on others will wait for their prerequisites to complete successfully before executing.
 
@@ -1404,7 +1404,7 @@ jobs:
    Clearly document dependencies to avoid confusion in complex workflows.
 
 
-![alt text](image-11.png)
+![alt text](images/image-11.png)
 
 job1 is dependent on job 2 and 3
 job2 is dependent on job 3
@@ -1418,31 +1418,31 @@ job3 ---> job2 ---> job1
 
 ### Encrypted Secrets
 
-![alt text](image-12.png)
+![alt text](images/image-12.png)
 
-![alt text](image-13.png)
+![alt text](images/image-13.png)
 
-![alt text](image-14.png)
+![alt text](images/image-14.png)
 
 
 ### Configuration Secrets
 
-![alt text](image-15.png)
+![alt text](images/image-15.png)
 
-![alt text](image-16.png)
+![alt text](images/image-16.png)
 
 
 ### Default ENV Variables
 
-![alt text](image-17.png)
+![alt text](images/image-17.png)
 
 ### Set Custom ENV Variables
 
-![alt text](image-18.png)
+![alt text](images/image-18.png)
 
-![alt text](image-19.png)
+![alt text](images/image-19.png)
 
-![alt text](image-20.png)
+![alt text](images/image-20.png)
 
 ---
 
@@ -1591,7 +1591,7 @@ Let me know if you'd like to explore specific use cases!
 
 ### Running Scripts in a workflow
 
-![alt text](image-21.png)
+![alt text](images/image-21.png)
 
 Running scripts in GitHub Actions workflows allows you to automate tasks using shell commands, custom scripts, or external tools.
 
@@ -1723,10 +1723,10 @@ jobs:
 
 ---
 
-### Example Workflow for Docker Image
+### Example Workflow for Docker images/image
 
 ```yaml
-name: Publish Docker Image
+name: Publish Docker images/image
 
 on:
   push:
@@ -1744,18 +1744,18 @@ jobs:
       - name: Log in to GitHub Docker Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
 
-      - name: Build Docker image
-        run: docker build -t ghcr.io/<owner>/<image-name>:latest .
+      - name: Build Docker images/image
+        run: docker build -t ghcr.io/<owner>/<images/image-name>:latest .
 
-      - name: Push Docker image
-        run: docker push ghcr.io/<owner>/<image-name>:latest
+      - name: Push Docker images/image
+        run: docker push ghcr.io/<owner>/<images/image-name>:latest
 ```
 
 ---
 
 ### Key Points:
 1. Use `GITHUB_TOKEN` for authentication.
-2. Replace placeholders like `<owner>`, `<image-name>`, etc.
+2. Replace placeholders like `<owner>`, `<images/image-name>`, etc.
 3. Ensure your repository has a `package.json` (for npm) or Dockerfile (for Docker).
 
 ---
@@ -1763,7 +1763,7 @@ jobs:
 
 ### Publish component as github release
 
-![alt text](image-22.png)
+![alt text](images/image-22.png)
 
 Let me break it down more simply!
 
@@ -1820,13 +1820,13 @@ This way, every time you push a new tag (representing a new version), a release 
 
 ### deploy to cloud
 
-![alt text](image-23.png)
+![alt text](images/image-23.png)
 
 ---
 
 ### Service containers
 
-![alt text](image-24.png)
+![alt text](images/image-24.png)
 
 In GitHub Actions, **service containers** are Docker containers that you can use to run services (like databases, caches, etc.) required by your workflow jobs. These containers run alongside your job and are accessible from within your actions, allowing you to interact with them during your CI/CD process.
 
@@ -1839,7 +1839,7 @@ jobs:
 
     services:
       mysql:
-        image: mysql:5.7
+        images/image: mysql:5.7
         env:
           MYSQL_ROOT_PASSWORD: root
         ports:
