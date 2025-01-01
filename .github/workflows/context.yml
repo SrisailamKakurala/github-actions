@@ -16,10 +16,14 @@ jobs:
           echo "Event name: ${{ github.event_name }}"
 
       # Environment Context
-      - name: Environment Context
+      - name: Set environment variable
         run: |
           echo "MY_ENV_VAR=Hello World" >> $GITHUB_ENV
-          echo "Environment variable: $MY_ENV_VAR"
+
+      # Access environment variable in another step
+      - name: Use environment variable
+        run: |
+          echo "Environment variable: ${{ env.MY_ENV_VAR }}"
 
       # Runner Context
       - name: Runner Context
