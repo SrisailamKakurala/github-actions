@@ -1826,6 +1826,8 @@ This way, every time you push a new tag (representing a new version), a release 
 
 ### Service containers
 
+![alt text](image-24.png)
+
 In GitHub Actions, **service containers** are Docker containers that you can use to run services (like databases, caches, etc.) required by your workflow jobs. These containers run alongside your job and are accessible from within your actions, allowing you to interact with them during your CI/CD process.
 
 For example, you can run a MySQL service container to test your app with a database. Here's how you might define a MySQL service in a workflow:
@@ -1859,4 +1861,193 @@ This allows your job to access the MySQL service at `localhost:3306`.
 
 ---
 
+### Route a workflow to a runner
+
+When you "route a workflow to a runner" in GitHub Actions, you're specifying which machine or environment should execute your workflow jobs. A **runner** is the virtual or physical machine that runs the steps in your GitHub Actions workflow. 
+
+There are two main types of runners:
+
+1. **GitHub-hosted runners**: These are provided by GitHub and come pre-configured with a set of commonly used software and tools. They are spun up when a workflow runs and destroyed after the job completes.
+
+2. **Self-hosted runners**: These are machines you set up and manage yourself. You have more control over the environment (e.g., custom software, hardware configurations) and can use them for specialized workflows.
+
+When you specify a runner in your workflow (using `runs-on`), you’re effectively directing the workflow to a specific environment (GitHub-hosted or self-hosted) for execution. For example:
+
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest  # This job will run on a GitHub-hosted Ubuntu runner
+```
+
+In this example, the `build` job is routed to a GitHub-hosted Ubuntu runner to execute its steps. You could also route it to a self-hosted runner by specifying its label instead of `ubuntu-latest`.
+
+Routing workflows to runners ensures that the right environment is used to run the job, making it easy to manage various dependencies and configurations for different parts of the CI/CD pipeline.
+
+
+---
+
+
+### CodeQL
+
+**CodeQL** is a tool used to find bugs, security vulnerabilities, and other issues in code. It's like a "code scanner" that helps developers identify potential problems in their software before they cause issues in production.
+
+Here’s how it works:
+
+- **Code Analysis**: CodeQL analyzes your code by using queries that check for specific patterns or potential vulnerabilities. It's like running a search across your codebase to find things that could go wrong.
+  
+- **Security**: It’s particularly useful for finding security vulnerabilities. For example, it can look for unsafe code that might lead to a security breach.
+
+- **Automated Scanning**: You can integrate CodeQL with GitHub Actions to automatically run security checks on your code every time you push changes or create pull requests.
+
+For example, a simple workflow to run CodeQL analysis on your repository could look like this:
+
+```yaml
+name: "CodeQL Analysis"
+
+on:
+  push:
+    branches: 
+      - main
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up CodeQL
+      uses: github/codeql-action/init@v2
+
+    - name: Run CodeQL analysis
+      uses: github/codeql-action/analyze@v2
+```
+
+### Summary:
+- CodeQL helps to find problems in code (e.g., security bugs).
+- It works by running queries to spot patterns or vulnerabilities.
+- You can automate the process using GitHub Actions.
+
+
+---
+
+
+Here’s a simple breakdown of each concept in GitHub Actions, formatted for your README:
+
+---
+
+### **Caching Package and Dependency Files**
+
+Caching allows you to save time by reusing dependencies or package files that don’t change frequently. You can cache things like `node_modules` for a Node.js project to avoid re-installing them every time the workflow runs.
+
+```yaml
+- name: Cache Node.js modules
+  uses: actions/cache@v3
+  with:
+    path: ~/.npm
+    key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+    restore-keys: |
+      ${{ runner.os }}-node-modules-
+```
+**Explanation**:
+- `actions/cache@v3`: GitHub Action to cache dependencies.
+- `path`: Path to the files to cache (e.g., `node_modules`).
+- `key`: Unique key for the cache (usually based on a file hash).
+- `restore-keys`: Helps restore cache if exact match is not found.
+
+---
+
+### **Caching Job Dependencies and Build Outputs**
+
+You can also cache build outputs or job dependencies to speed up the build process. This reduces time when re-running workflows after the first build.
+
+```yaml
+- name: Cache build outputs
+  uses: actions/cache@v3
+  with:
+    path: build/
+    key: ${{ runner.os }}-build-${{ hashFiles('**/*.cpp') }}
+    restore-keys: |
+      ${{ runner.os }}-build-
+```
+**Explanation**:
+- `path`: Directory or files to cache (e.g., `build/`).
+- `key`: Unique key for the cache based on files that trigger rebuilds.
+
+---
+
+### **Workflow Status Badge**
+
+A workflow status badge shows the current status of your workflow (e.g., passed, failed). You can add it to your README.
+
+```markdown
+![Workflow Status](https://img.shields.io/github/workflow/status/username/repo-name/Workflow-Name)
+```
+**Explanation**:
+- `https://img.shields.io/github/workflow/status/...`: A URL to display the badge.
+- `username/repo-name`: Your GitHub repository details.
+- `Workflow-Name`: The name of your workflow.
+
+---
+
+### **Environment Protections**
+
+You can protect sensitive environments, ensuring only specific users or conditions can trigger certain workflows.
+
+```yaml
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Deploy to Production
+        run: echo "Deploying to production"
+```
+**Explanation**:
+- `environment`: Specifies the protected environment (e.g., `production`).
+- You can configure access restrictions through GitHub repository settings.
+
+---
+
+### **Job Matrix Configuration**
+
+Job matrices allow you to run multiple jobs in parallel with different configurations (e.g., different operating systems or Node.js versions).
+
+```yaml
+strategy:
+  matrix:
+    os: [ubuntu-latest, macos-latest, windows-latest]
+    node: [14, 16]
+    
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+```
+**Explanation**:
+- `matrix`: Defines variables to test across different configurations.
+- This example runs the job on multiple OS versions (`ubuntu`, `macos`, `windows`) and multiple Node.js versions.
+
+---
+
+### **Action Versions**
+
+Specify the version of an action to use to ensure stability and avoid breaking changes.
+
+```yaml
+- name: Checkout code
+  uses: actions/checkout@v3
+```
+**Explanation**:
+- `uses: actions/checkout@v3`: This tells GitHub to use version 3 of the `checkout` action.
+
+---
 
