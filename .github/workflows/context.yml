@@ -29,4 +29,5 @@ jobs:
 
       # Secrets Context
       - name: Secrets Context
-        run: echo "Secret Value: ${{ secrets.MY_SECRET }}" # Avoid in production!
+        run: |
+          echo "Secret Value: ${{ secrets.MY_SECRET }}" # Avoid in production!
