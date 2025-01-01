@@ -874,3 +874,202 @@ jobs:
 - **Self-hosted runners** provide greater control and flexibility, ideal for custom environments, complex workflows, or specific resource needs.
 
 You can choose between these based on your project’s needs, scale, and level of customization required for your workflows.
+
+
+---
+
+### Workflow commands
+
+![alt text](image-6.png)
+
+![alt text](image-7.png)
+
+![alt text](image-8.png)
+
+
+Workflow commands in GitHub Actions allow you to interact with the workflow runner's environment. These commands are executed using special syntax inside a workflow and help set environment variables, add annotations, mask secrets, and more.
+
+Here’s a list of commonly used workflow commands:
+
+---
+
+### **1. `echo` for Workflow Commands**
+To invoke a command, you use `echo` with the prefix `::`.
+
+#### Syntax:
+```bash
+echo "::command parameter=value::message"
+```
+
+---
+
+### **2. Workflow Command Examples**
+
+#### **Set Environment Variables**
+You can create or update an environment variable using the `set-env` command.
+
+```bash
+echo "MY_VAR=value" >> $GITHUB_ENV
+```
+
+- Example:
+  ```yaml
+  - name: Set environment variable
+    run: echo "MY_VAR=Hello World" >> $GITHUB_ENV
+  - name: Use the variable
+    run: echo "The value is $MY_VAR"
+  ```
+
+---
+
+#### **Set Output for Steps**
+Pass values from one step to another using outputs.
+
+```bash
+echo "::set-output name=var_name::value"
+```
+
+- Example:
+  ```yaml
+  - name: Set output
+    id: step1
+    run: echo "value=Hello World" >> $GITHUB_ENV
+
+  - name: Use output
+    run: echo "The output is ${{ steps.step1.outputs.var_name }}"
+  ```
+
+> **Note**: `set-output` is deprecated. Use `GITHUB_ENV` for modern workflows.
+
+---
+
+#### **Group Logs**
+Group related logs for better readability in the Actions console.
+
+```bash
+echo "::group::Group Name"
+# Log output
+echo "Log message"
+echo "::endgroup::"
+```
+
+- Example:
+  ```yaml
+  - name: Group logs
+    run: |
+      echo "::group::Start of logs"
+      echo "This is inside the group."
+      echo "::endgroup::"
+  ```
+
+---
+
+#### **Add Annotations**
+Add annotations like warnings, errors, or notices to the logs.
+
+- **Warning:**
+  ```bash
+  echo "::warning file=app.js,line=10,col=15::This is a warning message"
+  ```
+
+- **Error:**
+  ```bash
+  echo "::error file=app.js,line=10,col=15::This is an error message"
+  ```
+
+- **Notice:**
+  ```bash
+  echo "::notice file=app.js,line=10,col=15::This is a notice"
+  ```
+
+---
+
+#### **Mask Sensitive Data**
+To hide sensitive information in logs, use the `add-mask` command.
+
+```bash
+echo "::add-mask::sensitive_value"
+```
+
+- Example:
+  ```yaml
+  - name: Mask sensitive data
+    run: echo "::add-mask::my-secret-value"
+  ```
+
+---
+
+#### **Set Debug Mode**
+Enable debug messages for troubleshooting.
+
+```bash
+echo "::debug::This is a debug message"
+```
+
+- Example:
+  ```yaml
+  - name: Debug example
+    run: echo "::debug::Debugging workflow step"
+  ```
+
+---
+
+#### **Stop Workflow Execution**
+You can cancel or skip steps using `cancel` or `fail`.
+
+- **Cancel Workflow:**
+  ```bash
+  echo "::cancel::Cancelling the workflow"
+  ```
+
+- **Fail Workflow:**
+  ```bash
+  echo "::error::Failing the workflow intentionally"
+  ```
+
+---
+
+#### **Set Status Check Results**
+Report success or failure of individual steps or actions.
+
+```bash
+echo "::set-output name=step-result::success"
+```
+
+---
+
+#### **Upload Artifacts**
+Use the `actions/upload-artifact` action to save files or logs for later use.
+
+```yaml
+- name: Upload logs
+  uses: actions/upload-artifact@v3
+  with:
+    name: my-logs
+    path: ./logs/
+```
+
+---
+
+### Summary Table of Commands:
+
+| Command            | Description                                |
+|--------------------|--------------------------------------------|
+| `GITHUB_ENV`       | Set environment variables.                |
+| `::group::`        | Start a log group.                        |
+| `::endgroup::`     | End a log group.                          |
+| `::debug::`        | Add debug information.                    |
+| `::warning::`      | Add a warning annotation.                 |
+| `::error::`        | Add an error annotation.                  |
+| `::notice::`       | Add a notice annotation.                  |
+| `::add-mask::`     | Mask sensitive data in logs.              |
+| `::set-output::`   | Pass outputs between steps (deprecated).  |
+| `actions/upload-artifact` | Save files for later use.          |
+
+---
+
+Would you like to see how these commands can be used in a complete workflow example?
+
+
+---
+

@@ -1,0 +1,92 @@
+name: Workflow Commands Demo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  workflow-commands:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Set Environment Variables
+      - name: Set environment variables
+        run: echo "MY_VAR=Hello World" >> $GITHUB_ENV
+
+      # Use the environment variable
+      - name: Use environment variable
+        run: echo "The value of MY_VAR is $MY_VAR"
+
+      # Set Output
+      - name: Set output example
+        id: output_step
+        run: echo "value=Output from Step 1" >> $GITHUB_ENV
+
+      - name: Use output
+        run: echo "Received output: ${{ steps.output_step.outputs.value }}"
+
+      # Group Logs
+      - name: Group logs example
+        run: |
+          echo "::group::Grouped Logs"
+          echo "This is inside the group."
+          echo "Grouped log details."
+          echo "::endgroup::"
+
+      # Add Annotations
+      - name: Add annotations
+        run: |
+          echo "::warning file=app.js,line=10,col=15::This is a warning message"
+          echo "::error file=app.js,line=12,col=5::This is an error message"
+          echo "::notice file=app.js,line=14,col=3::This is a notice"
+
+      # Mask Sensitive Data
+      - name: Mask sensitive data
+        run: |
+          echo "::add-mask::my-secret-password"
+          echo "This will not display: my-secret-password"
+
+      # Debug Example
+      - name: Debug example
+        run: echo "::debug::Debugging the workflow step."
+
+      # Stop Workflow Execution
+      - name: Cancel workflow example
+        if: false
+        run: echo "::cancel::Cancelling the workflow."
+
+      # Fail Workflow Example
+      - name: Fail workflow example
+        if: false
+        run: echo "::error::Failing the workflow intentionally."
+
+      # Upload Artifacts
+      - name: Upload artifacts example
+        run: |
+          mkdir -p logs
+          echo "Log entry 1" > logs/log1.txt
+          echo "Log entry 2" > logs/log2.txt
+      - name: Upload logs as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: log-files
+          path: logs/
+
+      # Parse JSON Example
+      - name: Parse JSON string
+        run: echo "Parsed JSON: ${{ fromJSON('{"key":"value"}').key }}"
+
+      # Hash Files Example
+      - name: Hash files
+        run: echo "Hash of files: ${{ hashFiles('**/package-lock.json', '**/Gemfile.lock') }}"
+
+      # Example of a successful job
+      - name: Success example
+        if: ${{ success() }}
+        run: echo "The job has succeeded."
+
+      # Example of a failed job
+      - name: Failure example
+        if: ${{ failure() }}
+        run: echo "The job has failed."
