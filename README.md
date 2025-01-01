@@ -1761,3 +1761,60 @@ jobs:
 ---
 
 
+### Publish component as github release
+
+![alt text](image-22.png)
+
+Let me break it down more simply!
+
+**What does publishing a component as a GitHub release mean?**
+
+When you publish a component as a GitHub release, you're creating a snapshot of your code at a specific point in time. This allows users to download a stable version of your project instead of always pulling the latest code from the repository.
+
+Think of it like:
+- A **release** is like a version of your project (e.g., "Version 1.0.0").
+- It can include compiled code, assets, and **release notes** (to explain what changed).
+- People can **download** this version easily instead of having to pull the latest code from your repository.
+
+---
+
+**How do you automate this using GitHub Actions?**
+
+You can use GitHub Actions to automatically create a release whenever you push a tag (like `v1.0.0`) to your repository. This means every time you want to make a new version available, you just create a tag in your GitHub repo, and the release is created automatically.
+
+### Simple Example (Code):
+This is an automated workflow that gets triggered when you push a version tag like `v1.0.0` to GitHub.
+
+```yaml
+name: Create GitHub Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Trigger when a tag like v1.0.0 is pushed
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3  # Get the code from the repo
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1  # Action to create the release
+        with:
+          files: './dist/*'  # Files to include in the release, e.g., compiled code in the `dist/` folder
+```
+
+### Steps:
+1. **Create a version tag** (like `v1.0.0`).
+2. When this tag is pushed, GitHub Actions runs the workflow.
+3. It then creates a release and attaches the files you specify (e.g., the compiled files in the `./dist/` folder).
+
+This way, every time you push a new tag (representing a new version), a release will automatically be published with your specified files.
+
+
+---
+
+
