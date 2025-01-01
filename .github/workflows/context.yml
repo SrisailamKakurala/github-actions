@@ -12,22 +12,21 @@ jobs:
       # GitHub Context
       - name: GitHub Context
         run: |
-          "echo \"Repository: ${{ github.repository }}\""
-          "echo \"Event name: ${{ github.event_name }}\""
+          echo "Repository: ${{ github.repository }}"
+          echo "Event name: ${{ github.event_name }}"
 
       # Environment Context
       - name: Environment Context
         run: |
           echo "MY_ENV_VAR=Hello World" >> $GITHUB_ENV
-          "echo \"Environment variable: ${{ env.MY_ENV_VAR }}\""
+          echo "Environment variable: ${{ env.MY_ENV_VAR }}"
 
       # Runner Context
       - name: Runner Context
         run: |
-          "echo \"Runner OS: ${{ runner.os }}\""
-          "echo \"Runner Temp Directory: ${{ runner.temp }}\""
+          echo "Runner OS: ${{ runner.os }}"
+          echo "Runner Temp Directory: ${{ runner.temp }}"
 
       # Secrets Context
       - name: Secrets Context
-        run: "echo \"Secret Value: ${{ secrets.MY_SECRET }}\"" # Avoid in production!
-
+        run: echo "Secret Value: ${{ secrets.MY_SECRET }}" # Avoid in production!
