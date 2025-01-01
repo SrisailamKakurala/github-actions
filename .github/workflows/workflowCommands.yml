@@ -21,10 +21,10 @@ jobs:
       # Set and Capture Output
       - name: Set output example
         id: output_step
-        run: echo "::set-output name=value::Output from Step 1"
-
-      - name: Use output from previous step
-        run: "echo \"Received output: ${{ steps.output_step.outputs.value }}\""
+        run: |
+          echo "value=Output from Step 1" >> $GITHUB_ENV
+        outputs:
+          value: ${{ env.value }}
 
       # Group Logs
       - name: Group logs example
@@ -68,7 +68,7 @@ jobs:
           echo "Log entry 1" > logs/log1.txt
           echo "Log entry 2" > logs/log2.txt
       - name: Upload logs as artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: log-files
           path: logs/
