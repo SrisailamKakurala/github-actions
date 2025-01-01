@@ -1238,3 +1238,173 @@ jobs:
 
 ---
 
+### Dependent Jobs
+
+![alt text](image-10.png)
+
+Dependent jobs are a way to define job execution order in a workflow. In GitHub Actions, you can set dependencies between jobs using the `needs` keyword. Jobs that depend on others will wait for their prerequisites to complete successfully before executing.
+
+---
+
+## Key Concepts
+
+1. **`needs` Keyword**:
+   - Specifies which jobs must complete before the current job runs.
+   - Ensures proper execution order in workflows.
+
+2. **Implicit Dependency**:
+   - If a job does not have a `needs` keyword, it runs independently unless there is a workflow-wide dependency.
+
+3. **Sequential Execution**:
+   - By chaining jobs with `needs`, you can execute jobs sequentially.
+
+---
+
+### Example: Simple Dependent Workflow
+
+```yaml
+name: Dependent Jobs Demo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Step 1
+        run: echo "This is Job 1"
+
+  job2:
+    runs-on: ubuntu-latest
+    needs: job1
+    steps:
+      - name: Step 2
+        run: echo "This is Job 2, dependent on Job 1"
+
+  job3:
+    runs-on: ubuntu-latest
+    needs: [job1, job2]
+    steps:
+      - name: Step 3
+        run: echo "This is Job 3, dependent on Job 1 and Job 2"
+```
+
+---
+
+### Explanation
+
+- **`job1`** runs first because it has no dependencies.
+- **`job2`** waits for `job1` to complete.
+- **`job3`** waits for both `job1` and `job2` to complete.
+
+---
+
+### Using Outputs from Previous Jobs
+
+Dependent jobs can use outputs from their prerequisite jobs. Outputs are defined in one job and accessed in the dependent job.
+
+#### Example: Passing Outputs Between Jobs
+
+```yaml
+name: Job Outputs Demo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    outputs:
+      job1_output: ${{ steps.get_output.outputs.result }}
+    steps:
+      - name: Generate Output
+        id: get_output
+        run: echo "::set-output name=result::Output from Job 1"
+
+  job2:
+    runs-on: ubuntu-latest
+    needs: job1
+    steps:
+      - name: Use Job 1 Output
+        run: echo "Received output from Job 1: ${{ needs.job1.outputs.job1_output }}"
+```
+
+#### Explanation
+
+1. **Defining Outputs**:
+   - In `job1`, an output named `job1_output` is defined with the value `Output from Job 1`.
+
+2. **Using Outputs**:
+   - `job2` depends on `job1` and uses the output through `needs.job1.outputs.job1_output`.
+
+---
+
+### Parallel and Conditional Dependencies
+
+#### Parallel Execution
+Jobs without explicit dependencies (`needs`) run in parallel.
+
+#### Conditional Dependencies
+You can use conditional expressions with `if` to control whether a dependent job runs.
+
+```yaml
+name: Conditional Dependencies
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Job 1"
+
+  job2:
+    runs-on: ubuntu-latest
+    needs: job1
+    if: ${{ success() && github.event_name == 'push' }}
+    steps:
+      - run: echo "Job 2 only runs if Job 1 succeeds and event is a push"
+```
+
+---
+
+### Use Cases
+
+1. **Sequential Execution**:
+   Use `needs` to enforce order.
+
+2. **Parallel Execution**:
+   Omit `needs` for independent jobs.
+
+3. **Conditional Pipelines**:
+   Combine `needs` and `if` to create dynamic workflows.
+
+4. **Pass Outputs**:
+   Share data between jobs using outputs and `needs`.
+
+---
+
+### Best Practices
+
+1. **Minimize Dependencies**:
+   Keep dependency chains short for faster workflows.
+
+2. **Error Handling**:
+   Use `if: failure()` or `if: always()` for cleanup or fallback jobs.
+
+3. **Documentation**:
+   Clearly document dependencies to avoid confusion in complex workflows.
+
+---
+
+Let me know if you'd like examples of more advanced patterns!
+
+
