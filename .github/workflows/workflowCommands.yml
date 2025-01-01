@@ -75,7 +75,7 @@ jobs:
 
       # Parse JSON Example
       - name: Parse JSON string
-        run: "echo \"Parsed JSON: ${{ fromJSON('{"key":"value"}').key }}\""
+        run: "echo \"Parsed JSON: ${{ fromJSON('{\"key\":\"value\"}').key }}\""
 
       # Hash Files Example
       - name: Hash files
