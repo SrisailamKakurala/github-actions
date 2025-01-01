@@ -18,13 +18,13 @@ jobs:
       - name: Use environment variable
         run: echo "The value of MY_VAR is $MY_VAR"
 
-      # Set and Capture Output
+       # Set and Capture Output
       - name: Set output example
         id: output_step
-        run: |
-          echo "value=Output from Step 1" >> $GITHUB_ENV
-        outputs:
-          value: ${{ env.value }}
+        run: echo "value=Output from Step 1" >> $GITHUB_ENV
+
+      - name: Use output from previous step
+        run: echo "Received output: ${{ env.value }}"
 
       # Group Logs
       - name: Group logs example
