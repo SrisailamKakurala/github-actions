@@ -2051,3 +2051,114 @@ Specify the version of an action to use to ensure stability and avoid breaking c
 
 ---
 
+### Exit Codes for GitHub Actions:
+
+Exit codes in GitHub Actions help indicate the result of a script or job. Here are common examples:
+
+- **Exit code 0**: Success
+  ```bash
+  exit 0  # Indicates success
+  ```
+
+- **Exit code 1**: Failure
+  ```bash
+  exit 1  # Indicates failure
+  ```
+
+In GitHub Actions, if a job or step exits with a non-zero code (e.g., `exit 1`), it causes the workflow to fail. You can also capture error output to provide more details.
+
+---
+
+### Reusing Templates for Actions and Workflows:
+
+You can create reusable workflows or templates in GitHub Actions. For reusable workflows, define a workflow and then reference it in another workflow.
+
+**Reusable Workflow:**
+```yaml
+# .github/workflows/reusable-workflow.yml
+name: Reusable Workflow
+on:
+  workflow_call:
+    inputs:
+      exampleInput:
+        required: true
+        type: string
+
+jobs:
+  example-job:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Input received: ${{ inputs.exampleInput }}"
+```
+
+**Calling Reusable Workflow:**
+```yaml
+# .github/workflows/main.yml
+name: Main Workflow
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  call-reusable-workflow:
+    uses: ./.github/workflows/reusable-workflow.yml
+    with:
+      exampleInput: 'Hello'
+```
+
+---
+
+### Creating a Custom GitHub Action:
+
+To create a custom action, define it in an `action.yml` file and add your logic in a separate script file (e.g., `index.js`).
+
+**action.yml:**
+```yaml
+name: 'My Custom Action'
+description: 'A custom action to demonstrate GitHub Actions'
+inputs:
+  myInput:
+    description: 'Input string'
+    required: true
+    default: 'default'
+outputs:
+  myOutput:
+    description: 'Output string'
+
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+```
+
+**index.js:**
+```javascript
+const core = require('@actions/core');
+
+try {
+  const myInput = core.getInput('myInput');
+  console.log(`Received input: ${myInput}`);
+  core.setOutput('myOutput', `Processed: ${myInput}`);
+} catch (error) {
+  core.setFailed(error.message);
+}
+```
+
+**package.json:**
+```json
+{
+  "name": "my-custom-action",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "dependencies": {
+    "@actions/core": "^1.0.0"
+  }
+}
+```
+
+---
+
+This structure allows you to build a reusable action with custom logic and make it easy to integrate into different workflows by specifying it in `action.yml`.
+
+---
+
