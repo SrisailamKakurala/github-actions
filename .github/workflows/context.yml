@@ -36,5 +36,4 @@ jobs:
         strategy:
           matrix:
             os: [ubuntu-latest, windows-latest]
-        steps:
-          - run: "echo \"Matrix OS: ${{ matrix.os }}\""
+        run: "echo \"Matrix OS: ${{ matrix.os }}\""
