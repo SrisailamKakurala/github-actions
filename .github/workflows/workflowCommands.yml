@@ -24,7 +24,7 @@ jobs:
         run: echo "value=Output from Step 1" >> $GITHUB_ENV
 
       - name: Use output from previous step
-        run: echo "Received output: ${{ env.value }}"
+        run: "echo \"Received output: ${{ env.value }}\""
 
       # Group Logs
       - name: Group logs example
