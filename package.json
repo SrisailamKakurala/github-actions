@@ -1,6 +1,6 @@
 {
-  "name": "my-github-actions-demo-ssl",
-  "version": "1.0.0",
+  "name": "my-github-actions-demo-ssl-v2",
+  "version": "2.0.0",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
