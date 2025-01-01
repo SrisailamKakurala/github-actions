@@ -1,5 +1,5 @@
 {
-  "name": "github-actions",
+  "name": "my-github-actions-demo-ssl",
   "version": "1.0.0",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
