@@ -1,4 +1,3 @@
-Sure! Here's a more detailed and comprehensive guide on GitHub Actions, covering as much ground as possible, including events, jobs, workflows, and many other advanced concepts:
 
 ---
 
